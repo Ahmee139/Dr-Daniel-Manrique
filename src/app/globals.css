@@ -42,6 +42,9 @@ html {
   scroll-padding-top: calc(var(--header-height) + 28px);
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold) var(--color-gold-light);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* Themed scrollbar — WebKit (Chrome, Edge, Safari) */
@@ -76,8 +79,21 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
   line-height: 1.65;
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
   -webkit-font-smoothing: antialiased;
+}
+
+.site-main,
+.page-wrapper,
+.subpage-wrapper,
+.pin-stack,
+.pin-panel {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -569,7 +585,7 @@ button {
   position: absolute;
   top: 0;
   right: 0;
-  width: min(320px, 100vw);
+  width: min(320px, 100%);
   height: 100%;
   height: 100dvh;
   background-color: var(--color-bg-primary);
@@ -1053,12 +1069,18 @@ button {
     padding-right: env(safe-area-inset-right);
   }
 
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
   .pin-panel {
     position: relative;
     top: auto;
     min-height: auto;
     box-shadow: none;
     will-change: auto;
+    overflow: hidden;
   }
 
   .pin-panel-hero {
@@ -1074,81 +1096,171 @@ button {
     min-height: auto;
     align-items: flex-start;
     padding: calc(var(--header-height) + 40px) 0 64px;
+    overflow: hidden;
+  }
+
+  .about-image-column,
+  .about-image-wrapper {
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .about-deco-frame-1 {
-    left: -8px;
-    top: -8px;
+    left: 0;
+    top: 0;
   }
 
   .about-deco-frame-2 {
-    right: -8px;
-    bottom: -8px;
+    right: 0;
+    bottom: 0;
   }
 
   .about-cta-row {
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 10px;
   }
 
   .btn-about-premium {
-    flex: 1 1 140px;
+    flex: 1 1 100%;
     min-width: 0;
+    width: 100%;
   }
 
   .hero-section {
-    padding: calc(var(--header-height) + 28px) 0 64px;
+    padding: calc(var(--header-height) + 28px) 0 56px;
     min-height: 100svh;
     height: auto;
-    overflow: visible;
+    overflow: hidden;
+    width: 100%;
   }
 
+  .hero-container,
   .hero-content-centered {
     max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .hero-title-large {
-    font-size: clamp(30px, 7vw, 42px);
+    font-size: clamp(26px, 7.2vw, 38px);
+    letter-spacing: -0.5px;
+    margin-bottom: 18px;
+    word-break: break-word;
   }
 
   .hero-description-centered {
-    font-size: 16px;
-    max-width: 36rem;
+    font-size: 15px;
+    line-height: 1.65;
+    max-width: 100%;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+
+  .hero-sub {
+    font-size: 11px;
+    letter-spacing: 1.6px;
+    padding: 0 8px;
   }
 
   .hero-bullets-centered {
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    margin-bottom: 28px;
   }
 
   .hero-actions-centered {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    gap: 10px;
+  }
+
+  .hero-actions-centered .btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Prevent enter animations from widening the page */
+  .reveal-from-left,
+  .reveal-from-right,
+  .procedures-premium-card.from-left,
+  .procedures-premium-card.from-right,
+  .procedure-card-premium.from-left,
+  .procedure-card-premium.from-right,
+  .home-showcase-card.from-left,
+  .home-showcase-card.from-right,
+  .stats-orbit-item.from-left,
+  .stats-orbit-item.from-right,
+  .advantage-step.is-left .advantage-card-premium,
+  .advantage-step.is-right .advantage-card-premium,
+  .procedures-cards-stage:not(.is-in) .procedures-premium-card.from-left,
+  .procedures-cards-stage:not(.is-in) .procedures-premium-card.from-right,
+  .procedure-category:not(.is-in) .procedure-card-premium.from-left,
+  .procedure-category:not(.is-in) .procedure-card-premium.from-right,
+  .home-showcase-stage:not(.is-in) .home-showcase-card.from-left,
+  .home-showcase-stage:not(.is-in) .home-showcase-card.from-right {
+    transform: translate3d(0, 28px, 0);
+  }
+
+  .reveal-from-left.is-in,
+  .reveal-from-right.is-in,
+  .procedures-cards-stage.is-in .procedures-premium-card.from-left,
+  .procedures-cards-stage.is-in .procedures-premium-card.from-right,
+  .procedure-category.is-in .procedure-card-premium.from-left,
+  .procedure-category.is-in .procedure-card-premium.from-right,
+  .home-showcase-stage.is-in .home-showcase-card.from-left,
+  .home-showcase-stage.is-in .home-showcase-card.from-right,
+  .advantage-step.is-in .advantage-card-premium,
+  .stats-orbit-item.is-visible {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 
   .procedures-cards-section {
     min-height: auto;
     align-items: flex-start;
-    overflow: visible;
+    overflow: hidden;
+    width: 100%;
   }
 
   .procedures-cards-section .container {
-    padding-top: 72px;
-    padding-bottom: 80px;
+    padding-top: 64px;
+    padding-bottom: 72px;
   }
 
   .procedures-cards-stage {
     grid-template-columns: 1fr;
-    max-width: 520px;
+    max-width: 100%;
     gap: 14px;
+    width: 100%;
   }
 
   .procedures-premium-card {
     min-height: 0;
     padding: 22px 20px 24px;
+    width: 100%;
+  }
+
+  .procedure-card-premium::after {
+    right: -12px;
+    width: 88px;
+  }
+
+  .procedure-card-watermark {
+    font-size: 52px;
+    right: 2px;
+  }
+
+  .stats-showcase,
+  .advantages-section,
+  .contact-showcase,
+  .home-showcase {
+    overflow: hidden;
+    width: 100%;
   }
 
   .stats-showcase .stats-pin-scene {
@@ -1161,32 +1273,48 @@ button {
     min-height: auto;
     padding: 72px 0;
   }
+
+  .stats-orbit-item.from-left,
+  .stats-orbit-item.from-right {
+    transform: translate3d(0, 28px, 0) scale(0.98);
+  }
 }
 
 /* Breakpoint: Mobile Devices */
 @media (max-width: 480px) {
   .hero-title-large {
-    font-size: clamp(28px, 8.2vw, 34px);
-    letter-spacing: -1px;
+    font-size: clamp(24px, 7.5vw, 30px);
+    letter-spacing: -0.6px;
+    margin-bottom: 14px;
   }
 
   .hero-description-centered {
-    font-size: 15px;
-    margin-bottom: 30px;
+    font-size: 14px;
+    margin-bottom: 22px;
+    line-height: 1.6;
   }
 
   .hero-actions-centered {
     flex-direction: column;
     width: 100%;
-    gap: 12px;
+    gap: 10px;
   }
 
   .hero-actions-centered .btn {
     width: 100%;
+    padding: 14px 18px;
+    font-size: 12px;
+    letter-spacing: 1.2px;
   }
 
   .container {
-    padding: 0 18px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .main-header .container {
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }
 
@@ -2992,18 +3120,19 @@ button {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 20px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
 
   .procedures-cards-stage {
     grid-template-columns: 1fr;
-    max-width: 480px;
+    max-width: 100%;
     gap: 14px;
   }
 
   .procedures-premium-card.from-left,
   .procedures-premium-card.from-right {
-    transform: translate3d(0, 28px, 0);
+    transform: translate3d(0, 24px, 0);
   }
 
   .procedures-cards-stage.is-in .procedures-premium-card.from-left,
@@ -3012,12 +3141,12 @@ button {
   }
 
   .procedures-cards-stage.is-in .procedures-premium-card:hover {
-    transform: translate3d(0, -4px, 0);
+    transform: translate3d(0, -3px, 0);
   }
 
   .procedures-cards-section .container {
-    padding-top: 64px;
-    padding-bottom: 72px;
+    padding-top: 56px;
+    padding-bottom: 64px;
   }
 
   .btn-about-premium {
@@ -3028,7 +3157,7 @@ button {
   .hero-actions-centered {
     flex-direction: column;
     width: 100%;
-    max-width: 360px;
+    max-width: 100%;
   }
 
   .hero-actions-centered .btn {
@@ -3036,7 +3165,7 @@ button {
   }
 
   .procedure-card-watermark {
-    font-size: 56px;
+    font-size: 48px;
     right: 4px;
     top: 0;
   }
@@ -3061,6 +3190,15 @@ button {
 
   .consultation-hero-compact {
     padding: calc(var(--header-height) + 48px) 0 36px;
+  }
+
+  .home-showcase-stage,
+  .home-showcase-stage-grid {
+    max-width: 100%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4828,11 +4966,11 @@ a.home-showcase-card:hover .home-showcase-arrow {
   }
 
   .advantage-step.is-left .advantage-card-premium {
-    transform: translate3d(-28px, 0, 0);
+    transform: translate3d(0, 24px, 0);
   }
 
   .advantage-step.is-right .advantage-card-premium {
-    transform: translate3d(28px, 0, 0);
+    transform: translate3d(0, 24px, 0);
   }
 
   .advantage-step.is-in .advantage-card-premium {
