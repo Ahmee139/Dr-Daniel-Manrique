@@ -40,6 +40,35 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + 28px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold) var(--color-gold-light);
+}
+
+/* Themed scrollbar — WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-gold-light);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-gold) 0%, var(--color-gold-hover) 100%);
+  border-radius: 999px;
+  border: 2px solid var(--color-gold-light);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-hover);
+  border: 2px solid var(--color-gold-light);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--color-gold-light);
 }
 
 body {
