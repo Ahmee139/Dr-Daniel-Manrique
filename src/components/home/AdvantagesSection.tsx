@@ -74,7 +74,7 @@ export default function AdvantagesSection() {
   }, []);
 
   return (
-    <section className="advantages-section advantages-premium">
+    <section id="why-us" className="advantages-section advantages-premium">
       <div className="container">
         <div className="section-header advantages-header">
           <span className="section-pre">{t.advPre}</span>

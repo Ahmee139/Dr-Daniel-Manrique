@@ -8,7 +8,7 @@ import StatsSection from '@/components/home/StatsSection';
 import AdvantagesSection from '@/components/home/AdvantagesSection';
 import ContactSection from '@/components/home/ContactSection';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { scrollToHomeAbout } from '@/utils/homeScroll';
+import { scrollToHomeAbout, scrollToHomeSection } from '@/utils/homeScroll';
 
 function shouldPlayIntroLoader() {
   if (typeof window === 'undefined') return true;
@@ -68,6 +68,10 @@ export default function HomePage() {
       }
       if (hash === 'hero' || hash === 'home') {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        return;
+      }
+      if (hash === 'why-us' || hash === 'contact' || hash === 'procedures') {
+        scrollToHomeSection(hash, 'smooth');
         return;
       }
       const el = document.getElementById(hash);

@@ -1295,6 +1295,7 @@ button {
 }
 
 #procedures,
+#why-us,
 #contact {
   scroll-margin-top: calc(var(--header-height) + 16px);
 }

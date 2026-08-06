@@ -9,6 +9,7 @@ import {
   getActiveHomeSection,
   scrollToHomeAbout,
   scrollToHomeHero,
+  scrollToHomeSection,
   type HomeNavSection,
 } from '@/utils/homeScroll';
 
@@ -86,10 +87,26 @@ export default function Navbar() {
       scrollToHomeHero();
       return;
     }
+    if (id === 'why-us' || id === 'contact' || id === 'procedures') {
+      scrollToHomeSection(id);
+      return;
+    }
     const el = document.getElementById(id);
     if (!el) return;
     const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - 72));
     window.scrollTo({ top: y, behavior: 'smooth' });
+  };
+
+  const handleWhyUsSection = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeMobile();
+    if (pathname === '/') {
+      scrollToHomeSection('why-us');
+      setHomeSection('why-us');
+    } else {
+      router.push('/#why-us');
+    }
   };
 
   const handleHomeClick = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -175,6 +192,7 @@ export default function Navbar() {
   const isAboutActive = pathname.startsWith('/about') || (onHome && homeSection === 'about');
   const isProceduresActive =
     pathname.startsWith('/procedures') || (onHome && homeSection === 'procedures');
+  const isWhyUsActive = onHome && homeSection === 'why-us';
   const isContactActive =
     pathname.startsWith('/contact') || (onHome && homeSection === 'contact');
   const isConsultationActive = pathname.startsWith('/consultation');
@@ -244,6 +262,15 @@ export default function Navbar() {
                 >
                   <span>{t.procedures}</span>
                   <span className="nav-inline-spinner" aria-hidden="true" />
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  href="/#why-us"
+                  onClick={handleWhyUsSection}
+                  className={`nav-link ${isWhyUsActive ? 'active' : ''}`}
+                >
+                  {t.whyUs}
                 </Link>
               </li>
               <li className="nav-item">
@@ -361,6 +388,15 @@ export default function Navbar() {
                   aria-busy={isProceduresLoading}
                 >
                   {t.procedures}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#why-us"
+                  onClick={handleWhyUsSection}
+                  className={`mobile-link ${isWhyUsActive ? 'active' : ''}`}
+                >
+                  {t.whyUs}
                 </Link>
               </li>
               <li>

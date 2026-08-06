@@ -1,4 +1,4 @@
-export type HomeNavSection = 'home' | 'about' | 'procedures' | 'contact';
+export type HomeNavSection = 'home' | 'about' | 'procedures' | 'why-us' | 'contact';
 
 const HEADER_PROBE = 96;
 
@@ -119,6 +119,14 @@ export function scrollToHomeAbout(behavior: ScrollBehavior = 'smooth') {
   });
 }
 
+/** Smooth scroll to a normal-flow home section (Why Us, Contact, etc.). */
+export function scrollToHomeSection(id: string, behavior: ScrollBehavior = 'smooth') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - 72));
+  scrollWindowTo(y, behavior);
+}
+
 /** Active home nav section from current scroll / pin position. */
 export function getActiveHomeSection(): HomeNavSection {
   const contact = document.getElementById('contact');
@@ -126,8 +134,18 @@ export function getActiveHomeSection(): HomeNavSection {
     return 'contact';
   }
 
+  const whyUs = document.getElementById('why-us');
+  if (whyUs && whyUs.getBoundingClientRect().top <= HEADER_PROBE) {
+    return 'why-us';
+  }
+
   const proceduresPanel = document.querySelector('.pin-panel-procedures') as HTMLElement | null;
   if (proceduresPanel && proceduresPanel.getBoundingClientRect().top <= HEADER_PROBE) {
+    return 'procedures';
+  }
+
+  const procedures = document.getElementById('procedures');
+  if (procedures && procedures.getBoundingClientRect().top <= HEADER_PROBE) {
     return 'procedures';
   }
 
