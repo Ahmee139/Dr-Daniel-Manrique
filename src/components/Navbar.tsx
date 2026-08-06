@@ -5,6 +5,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePageTransition } from '@/context/PageTransitionContext';
+import {
+  getActiveHomeSection,
+  scrollToHomeAbout,
+  scrollToHomeHero,
+  type HomeNavSection,
+} from '@/utils/homeScroll';
 
 export default function Navbar() {
   const { t } = useLanguage();
@@ -13,6 +19,7 @@ export default function Navbar() {
   const [overHero, setOverHero] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState({ about: false });
+  const [homeSection, setHomeSection] = useState<HomeNavSection>('home');
   const pathname = usePathname();
   const router = useRouter();
   const scrolledRef = useRef(false);
@@ -22,7 +29,6 @@ export default function Navbar() {
       const y = window.scrollY;
       const onHome = pathname === '/';
 
-      // Still over the video hero until About has nearly reached the top
       let nextOverHero = false;
       if (onHome) {
         const aboutPanel = document.querySelector('.pin-panel-about') as HTMLElement | null;
@@ -34,10 +40,11 @@ export default function Navbar() {
             ? hero.getBoundingClientRect().bottom > window.innerHeight * 0.55
             : y < window.innerHeight - 80;
         }
+        setHomeSection(getActiveHomeSection());
       }
+
       setOverHero(nextOverHero);
 
-      // "Scrolled" solid bar only applies once we're off the hero
       const nextScrolled = !nextOverHero && y > 12;
       if (nextScrolled !== scrolledRef.current) {
         scrolledRef.current = nextScrolled;
@@ -71,25 +78,28 @@ export default function Navbar() {
 
   const scrollToHash = (hash: string) => {
     const id = hash.replace('#', '');
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const scrollToHero = () => {
-    const hero =
-      (document.querySelector('.hero-section') as HTMLElement | null) ||
-      (document.getElementById('hero') as HTMLElement | null);
-    if (hero) {
-      hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 'about') {
+      scrollToHomeAbout();
+      return;
     }
+    if (id === 'hero' || id === 'home') {
+      scrollToHomeHero();
+      return;
+    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - 72));
+    window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
   const handleHomeClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     closeMobile();
     if (pathname === '/') {
-      scrollToHero();
+      // Instant land on hero — no half-pin leftover
+      scrollToHomeHero('auto');
+      setHomeSection('home');
       return;
     }
     router.push('/');
@@ -128,9 +138,11 @@ export default function Navbar() {
 
   const handleAboutSection = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     closeMobile();
     if (pathname === '/') {
-      scrollToHash('#about');
+      scrollToHomeAbout('smooth');
+      setHomeSection('about');
     } else {
       router.push('/#about');
     }
@@ -158,9 +170,13 @@ export default function Navbar() {
 
   const isBookingLoading = transitioning && sectionName === t.bookConsultation;
   const isProceduresLoading = transitioning && sectionName === t.procedures;
-  const isAboutActive = pathname === '/' ? false : pathname.startsWith('/about');
-  const isProceduresActive = pathname.startsWith('/procedures');
-  const isContactActive = pathname.startsWith('/contact');
+  const onHome = pathname === '/';
+  const isHomeActive = onHome ? homeSection === 'home' : false;
+  const isAboutActive = pathname.startsWith('/about') || (onHome && homeSection === 'about');
+  const isProceduresActive =
+    pathname.startsWith('/procedures') || (onHome && homeSection === 'procedures');
+  const isContactActive =
+    pathname.startsWith('/contact') || (onHome && homeSection === 'contact');
   const isConsultationActive = pathname.startsWith('/consultation');
   const headerClass = [
     'main-header',
@@ -185,7 +201,7 @@ export default function Navbar() {
           <nav className="desktop-nav" aria-label="Primary">
             <ul className="nav-menu">
               <li className="nav-item">
-                <Link href="/" onClick={handleHomeClick} className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
+                <Link href="/" onClick={handleHomeClick} className={`nav-link ${isHomeActive ? 'active' : ''}`}>
                   {t.home}
                 </Link>
               </li>
@@ -298,13 +314,13 @@ export default function Navbar() {
           <nav className="mobile-nav-menu">
             <ul>
               <li>
-                <Link href="/" onClick={handleHomeClick} className={`mobile-link ${pathname === '/' ? 'active' : ''}`}>
+                <Link href="/" onClick={handleHomeClick} className={`mobile-link ${isHomeActive ? 'active' : ''}`}>
                   {t.home}
                 </Link>
               </li>
               <li className="mobile-has-submenu">
                 <button
-                  className={`mobile-submenu-btn ${mobileSubmenuOpen.about ? 'active' : ''}`}
+                  className={`mobile-submenu-btn ${mobileSubmenuOpen.about || isAboutActive ? 'active' : ''}`}
                   onClick={() => setMobileSubmenuOpen((prev) => ({ ...prev, about: !prev.about }))}
                   type="button"
                   aria-expanded={mobileSubmenuOpen.about}

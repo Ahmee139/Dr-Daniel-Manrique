@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePageTransition } from '@/context/PageTransitionContext';
 import { siteInfo } from '@/data/site';
+import { scrollToHomeAbout } from '@/utils/homeScroll';
 import type { MouseEvent } from 'react';
 
 export default function Footer() {
@@ -16,7 +17,7 @@ export default function Footer() {
   const goAbout = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (pathname === '/') {
-      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToHomeAbout();
     } else {
       router.push('/#about');
     }

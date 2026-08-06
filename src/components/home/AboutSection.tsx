@@ -69,8 +69,21 @@ export default function AboutSection() {
       window.requestAnimationFrame(update);
     };
 
+    const forceReveal = () => {
+      // Hard reset then play so animation always runs on nav click
+      playOut();
+      wasActiveRef.current = false;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          playIn();
+          wasActiveRef.current = true;
+        });
+      });
+    };
+
     window.addEventListener('scroll', onScrollOrResize, { passive: true });
     window.addEventListener('resize', onScrollOrResize, { passive: true });
+    window.addEventListener('dm-reveal-about', forceReveal);
     // Wait a frame so sticky layout settles after refresh loader
     const boot = window.setTimeout(update, 40);
 
@@ -78,6 +91,7 @@ export default function AboutSection() {
       window.clearTimeout(boot);
       window.removeEventListener('scroll', onScrollOrResize);
       window.removeEventListener('resize', onScrollOrResize);
+      window.removeEventListener('dm-reveal-about', forceReveal);
     };
   }, []);
 

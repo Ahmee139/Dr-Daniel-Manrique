@@ -357,6 +357,7 @@ button {
 .logo-text {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .logo-name {
@@ -366,6 +367,7 @@ button {
   color: var(--color-text-primary);
   line-height: 1.1;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .logo-tagline {
@@ -375,6 +377,10 @@ button {
   color: var(--color-gold);
   font-weight: 600;
   margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
 }
 
 /* Navigation sits clearly apart from the logo */
@@ -418,7 +424,7 @@ button {
   color: var(--color-gold-hover);
 }
 
-/* Subtle border reveal line on Hover */
+/* Underline tracks active section while scrolling */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -428,10 +434,13 @@ button {
   width: 0;
   height: 1.5px;
   background-color: var(--color-gold);
-  transition: var(--transition-premium);
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
 }
 
-.nav-link:hover::after, .nav-link.active::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
 }
 
@@ -530,19 +539,23 @@ button {
 .mobile-nav-container {
   position: absolute;
   top: 0;
-  right: -320px;
-  width: 320px;
+  right: 0;
+  width: min(320px, 100vw);
   height: 100%;
+  height: 100dvh;
   background-color: var(--color-bg-primary);
   padding: 40px 30px;
+  padding-top: max(40px, env(safe-area-inset-top));
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: -12px 0 40px rgba(0, 0, 0, 0.08);
 }
 
 .mobile-nav-overlay.open .mobile-nav-container {
-  right: 0;
+  transform: translateX(0);
 }
 
 .mobile-nav-header {
@@ -634,8 +647,6 @@ button {
   padding: calc(var(--header-height) + 40px) 0 100px 0;
   min-height: 100vh;
   min-height: 100svh;
-  height: 100vh;
-  height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -673,7 +684,7 @@ button {
 
 .hero-title-large {
   font-family: var(--font-heading);
-  font-size: 48px;
+  font-size: clamp(32px, 4.6vw, 48px);
   font-weight: 900;
   color: var(--color-white);
   letter-spacing: -1px;
@@ -821,8 +832,14 @@ button {
 
 .about-fade-body {
   background: var(--color-bg-primary);
-  padding: 120px 0 140px;
+  /* Fit the full About composition inside the sticky viewport */
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-height) + 28px) 0 48px;
   transform: translateZ(0);
+  box-sizing: border-box;
 }
 
 /* Video background layer */
@@ -877,10 +894,10 @@ button {
 /* Scroll reveal triggers */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(28px);
   transition:
-    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scroll-reveal.visible {
@@ -937,67 +954,190 @@ button {
    RESPONSIVE DESIGN (MEDIA QUERIES)
    ========================================================================== */
 
-/* Breakpoint: Large Desktop (Slight size adjustments) */
-@media (max-width: 1200px) {
-  .hero-title-large {
-    font-size: 56px;
-  }
-}
-
-/* Breakpoint: Desktop (Nav dropdown toggle space) */
-@media (max-width: 1024px) {
-  .nav-menu {
-    gap: 24px;
-  }
-}
-
-/* Breakpoint: Tablet (Toggle mobile menus) */
-@media (max-width: 991px) {
+/* Large tablet / small laptop — switch to mobile nav before header crowds */
+@media (max-width: 1100px) {
   :root {
     --header-height: 70px;
   }
 
-  .top-bar {
-    display: none; /* Hide top bar for layout space */
+  .header-container {
+    gap: 16px;
   }
 
   .desktop-nav {
-    display: none; /* Hide desktop nav */
+    display: none;
   }
 
   .btn-header {
-    display: none; /* Hide consultation CTA from header, goes to mobile menu */
+    display: none;
   }
 
   .mobile-toggle {
-    display: flex; /* Show mobile drawer toggle button */
+    display: flex;
   }
 
-  .hero-section {
-    padding-top: 100px;
-    height: 100svh;
+  .header-cta-wrapper {
+    margin-left: auto;
+  }
+
+  .logo {
+    flex-shrink: 1;
+    min-width: 0;
+    margin-right: 8px;
+  }
+
+  .logo-name {
+    font-size: 16px;
+  }
+
+  .logo-tagline {
+    max-width: min(180px, 42vw);
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-title-large {
+    font-size: clamp(34px, 4.2vw, 46px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .nav-menu {
+    gap: 20px;
+  }
+
+  .advantages-timeline {
+    max-width: 100%;
+  }
+}
+
+/* Tablet — unlock pin stack so content is never clipped */
+@media (max-width: 991px) {
+  .top-bar {
+    display: none;
+  }
+
+  .main-header {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .pin-panel {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    box-shadow: none;
+    will-change: auto;
+  }
+
+  .pin-panel-hero {
     min-height: 100svh;
   }
 
+  .pin-hold {
+    display: none;
+    height: 0;
+  }
+
+  .about-fade-body {
+    min-height: auto;
+    align-items: flex-start;
+    padding: calc(var(--header-height) + 40px) 0 64px;
+  }
+
+  .about-deco-frame-1 {
+    left: -8px;
+    top: -8px;
+  }
+
+  .about-deco-frame-2 {
+    right: -8px;
+    bottom: -8px;
+  }
+
+  .about-cta-row {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-about-premium {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+
+  .hero-section {
+    padding: calc(var(--header-height) + 28px) 0 64px;
+    min-height: 100svh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .hero-content-centered {
+    max-width: 100%;
+  }
+
   .hero-title-large {
-    font-size: 46px;
+    font-size: clamp(30px, 7vw, 42px);
   }
 
   .hero-description-centered {
-    font-size: 17px;
+    font-size: 16px;
+    max-width: 36rem;
   }
 
   .hero-bullets-centered {
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
+  }
+
+  .hero-actions-centered {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .procedures-cards-section {
+    min-height: auto;
+    align-items: flex-start;
+    overflow: visible;
+  }
+
+  .procedures-cards-section .container {
+    padding-top: 72px;
+    padding-bottom: 80px;
+  }
+
+  .procedures-cards-stage {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    gap: 14px;
+  }
+
+  .procedures-premium-card {
+    min-height: 0;
+    padding: 22px 20px 24px;
+  }
+
+  .stats-showcase .stats-pin-scene {
+    min-height: 0;
+  }
+
+  .stats-pin-sticky {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    padding: 72px 0;
   }
 }
 
 /* Breakpoint: Mobile Devices */
 @media (max-width: 480px) {
   .hero-title-large {
-    font-size: 36px;
+    font-size: clamp(28px, 8.2vw, 34px);
     letter-spacing: -1px;
   }
 
@@ -1017,7 +1157,7 @@ button {
   }
 
   .container {
-    padding: 0 20px;
+    padding: 0 18px;
   }
 }
 
@@ -1049,10 +1189,12 @@ button {
 .loader-content {
   position: relative;
   width: 100%;
+  max-width: 92vw;
   height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 16px;
 }
 
 .loader-word {
@@ -1061,7 +1203,7 @@ button {
   top: 50%;
   transform: translate(-50%, -50%) translateY(18px) scale(0.985);
   font-family: var(--font-heading);
-  font-size: 56px;
+  font-size: clamp(22px, 7vw, 56px);
   font-weight: 400;
   color: var(--color-text-primary);
   opacity: 0;
@@ -1072,6 +1214,10 @@ button {
     visibility 0.95s ease;
   white-space: nowrap;
   letter-spacing: -0.5px;
+  max-width: 92vw;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .loader-word.active {
@@ -1113,8 +1259,15 @@ button {
   background: transparent;
 }
 
+/* Full-bleed pin panels — no scroll-margin (it stopped About short of a true pin) */
+#hero,
 #about {
-  scroll-margin-top: calc(var(--header-height) + 24px);
+  scroll-margin-top: 0;
+}
+
+#procedures,
+#contact {
+  scroll-margin-top: calc(var(--header-height) + 16px);
 }
 
 .about-grid {
@@ -1310,9 +1463,14 @@ button {
 
 /* Responsive Rules for About Section */
 @media (max-width: 991px) {
+  .about-fade-body {
+    align-items: flex-start;
+    padding: calc(var(--header-height) + 36px) 0 56px;
+  }
+
   .about-grid {
     grid-template-columns: 1fr;
-    gap: 60px;
+    gap: 36px;
     text-align: center;
   }
 
@@ -1322,7 +1480,7 @@ button {
   }
 
   .about-image-column {
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
 }
 
@@ -1847,7 +2005,7 @@ button {
 
 .subpage-main {
   flex: 1 0 auto;
-  padding-top: 90px; /* Offset sticky header */
+  padding-top: calc(var(--header-height) + 10px);
 }
 
 /* Subpage Hero */
@@ -2687,29 +2845,29 @@ button {
 
 .procedures-premium-card {
   position: relative;
-  padding: 32px 30px 36px;
-  min-height: 210px;
+  padding: 28px 26px 30px;
+  min-height: 190px;
   border: 1px solid rgba(197, 160, 89, 0.22);
-  border-radius: 18px;
+  border-radius: 16px;
   background:
     linear-gradient(165deg, #ffffff 0%, #faf8f4 100%);
-  box-shadow: 0 16px 40px rgba(20, 23, 26, 0.05);
+  box-shadow: 0 14px 36px rgba(20, 23, 26, 0.045);
   overflow: hidden;
   opacity: 0;
   will-change: transform, opacity;
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s ease,
+    box-shadow 0.5s ease;
 }
 
 .procedures-premium-card.from-left {
-  transform: translate3d(-52px, 18px, 0);
+  transform: translate3d(-44px, 0, 0);
 }
 
 .procedures-premium-card.from-right {
-  transform: translate3d(52px, 18px, 0);
+  transform: translate3d(44px, 0, 0);
 }
 
 .procedures-cards-stage.is-in .procedures-premium-card {
@@ -2719,12 +2877,12 @@ button {
 
 .procedures-cards-stage:not(.is-in) .procedures-premium-card.from-left {
   opacity: 0;
-  transform: translate3d(-36px, 12px, 0);
+  transform: translate3d(-28px, 0, 0);
 }
 
 .procedures-cards-stage:not(.is-in) .procedures-premium-card.from-right {
   opacity: 0;
-  transform: translate3d(36px, 12px, 0);
+  transform: translate3d(28px, 0, 0);
 }
 
 .procedures-premium-card::before {
@@ -2732,21 +2890,21 @@ button {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-  opacity: 0;
-  transition: opacity 0.35s ease;
+  width: 2px;
+  height: 0;
+  background: linear-gradient(180deg, var(--color-gold), var(--color-gold-hover));
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
+  transition: height 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .procedures-cards-stage.is-in .procedures-premium-card:hover {
   border-color: rgba(197, 160, 89, 0.5);
-  box-shadow: 0 24px 52px rgba(20, 23, 26, 0.1);
-  transform: translate3d(0, -6px, 0);
+  box-shadow: 0 20px 44px rgba(20, 23, 26, 0.09);
+  transform: translate3d(0, -5px, 0);
 }
 
 .procedures-premium-card:hover::before {
-  opacity: 1;
+  height: 100%;
 }
 
 .procedures-premium-card-index {
@@ -2785,16 +2943,16 @@ button {
   display: block;
   width: 36px;
   height: 2px;
-  margin-top: 22px;
+  margin-top: 18px;
   background: var(--color-gold);
   transform: scaleX(0.55);
   transform-origin: left center;
-  transition: transform 0.35s ease, width 0.35s ease;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), width 0.55s ease;
 }
 
 .procedures-premium-card:hover .procedures-premium-card-line {
   transform: scaleX(1);
-  width: 56px;
+  width: 52px;
 }
 
 .procedures-cards-cta {
@@ -2802,16 +2960,20 @@ button {
   justify-content: center;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+
   .procedures-cards-stage {
     grid-template-columns: 1fr;
     max-width: 480px;
-    gap: 16px;
+    gap: 14px;
   }
 
   .procedures-premium-card.from-left,
   .procedures-premium-card.from-right {
-    transform: translate3d(0, 32px, 0);
+    transform: translate3d(0, 28px, 0);
   }
 
   .procedures-cards-stage.is-in .procedures-premium-card.from-left,
@@ -2824,8 +2986,51 @@ button {
   }
 
   .procedures-cards-section .container {
-    padding-top: 80px;
-    padding-bottom: 84px;
+    padding-top: 64px;
+    padding-bottom: 72px;
+  }
+
+  .btn-about-premium {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .hero-actions-centered {
+    flex-direction: column;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .hero-actions-centered .btn {
+    width: 100%;
+  }
+
+  .procedure-card-watermark {
+    font-size: 56px;
+    right: 4px;
+    top: 0;
+  }
+
+  .procedure-card-body {
+    padding: 14px 16px 10px 18px;
+  }
+
+  .procedure-card-cta {
+    padding: 10px 16px 10px 18px;
+    font-size: 10px;
+  }
+
+  .consultation-form-panel-premium {
+    padding: 28px 18px 32px;
+    border-radius: 14px;
+  }
+
+  .consultation-body-solo {
+    padding: 32px 0 80px;
+  }
+
+  .consultation-hero-compact {
+    padding: calc(var(--header-height) + 48px) 0 36px;
   }
 }
 
@@ -3060,7 +3265,8 @@ button {
 }
 
 .procedures-grid-premium {
-  gap: 16px;
+  gap: 14px;
+  align-items: start;
 }
 
 .procedure-card {
@@ -3091,60 +3297,98 @@ button {
 .procedure-card-premium {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 0;
   min-height: 0;
-  padding: 22px 22px 20px 28px;
+  height: auto;
+  padding: 0;
   text-decoration: none;
   color: inherit;
-  background: #ffffff;
-  border: 1px solid rgba(197, 160, 89, 0.2);
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(20, 23, 26, 0.035);
+  background:
+    linear-gradient(155deg, #ffffff 0%, #fcfaf6 52%, #f6f0e6 100%);
+  border: 1px solid rgba(197, 160, 89, 0.26);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 10px 28px rgba(20, 23, 26, 0.045);
   position: relative;
   overflow: hidden;
   opacity: 0;
   will-change: transform, opacity;
   transition:
-    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.5s ease,
-    box-shadow 0.55s ease;
+    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s ease,
+    box-shadow 0.5s ease;
+  transition-delay: 0s;
+}
+
+.procedure-card-premium::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: -36px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.14) 0%, rgba(197, 160, 89, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .procedure-card-premium.from-left {
-  transform: translate3d(-56px, 0, 0);
+  transform: translate3d(-48px, 0, 0);
 }
 
 .procedure-card-premium.from-right {
-  transform: translate3d(56px, 0, 0);
+  transform: translate3d(48px, 0, 0);
 }
 
 .procedure-category.is-in .procedure-card-premium.from-left,
 .procedure-category.is-in .procedure-card-premium.from-right {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  transition-delay: var(--card-delay, 0s);
 }
 
 .procedure-category:not(.is-in) .procedure-card-premium.from-left {
   opacity: 0;
-  transform: translate3d(-40px, 0, 0);
+  transform: translate3d(-36px, 0, 0);
 }
 
 .procedure-category:not(.is-in) .procedure-card-premium.from-right {
   opacity: 0;
-  transform: translate3d(40px, 0, 0);
+  transform: translate3d(36px, 0, 0);
 }
 
 .procedure-category.is-in .procedure-card-premium:hover {
   transform: translate3d(0, -4px, 0);
-  border-color: rgba(197, 160, 89, 0.45);
-  box-shadow: 0 16px 36px rgba(20, 23, 26, 0.07);
-  transition:
-    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.5s ease,
-    box-shadow 0.55s ease;
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 18px 36px rgba(20, 23, 26, 0.09);
+  transition-delay: 0s;
+}
+
+.procedure-card-watermark {
+  position: absolute;
+  right: 8px;
+  top: 2px;
+  font-family: var(--font-heading);
+  font-size: clamp(64px, 8vw, 84px);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: rgba(197, 160, 89, 0.09);
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+.procedure-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px 12px 22px;
 }
 
 /* Left-edge vertical line + tiny dots — hover only */
@@ -3153,9 +3397,9 @@ button {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 12px;
+  width: 14px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 6;
 }
 
 .procedure-card-rail-line {
@@ -3163,45 +3407,47 @@ button {
   top: 0;
   left: 0;
   width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--color-gold) 0%, var(--color-gold-hover) 100%);
-  transform: scaleY(0);
-  transform-origin: top center;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  height: 0;
+  max-height: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--color-gold) 0%,
+    var(--color-gold-hover) 100%
+  );
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.35);
+  transition: height 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .procedure-card-rail-dot {
   position: absolute;
   left: 0;
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
+  margin-left: -1px;
   border-radius: 50%;
   background: var(--color-gold);
   opacity: 0;
-  transform: translateX(-0.5px) scale(0.35);
+  transform: scale(0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
   transition:
     opacity 0.4s ease,
     transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.procedure-card-rail-dot:nth-child(2) { top: 22%; transition-delay: 0.1s; }
-.procedure-card-rail-dot:nth-child(3) { top: 42%; transition-delay: 0.2s; }
-.procedure-card-rail-dot:nth-child(4) { top: 62%; transition-delay: 0.3s; }
-.procedure-card-rail-dot:nth-child(5) { top: 82%; transition-delay: 0.4s; }
+.procedure-card-rail-dot:nth-child(2) { top: 20%; transition-delay: 0.12s; }
+.procedure-card-rail-dot:nth-child(3) { top: 40%; transition-delay: 0.22s; }
+.procedure-card-rail-dot:nth-child(4) { top: 60%; transition-delay: 0.32s; }
+.procedure-card-rail-dot:nth-child(5) { top: 80%; transition-delay: 0.42s; }
 
-.procedure-card-premium:hover .procedure-card-rail-line {
-  transform: scaleY(1);
+.procedure-card-premium:hover .procedure-card-rail-line,
+.procedure-card-premium:focus-visible .procedure-card-rail-line {
+  height: 100%;
 }
 
-.procedure-card-premium:hover .procedure-card-rail-dot {
+.procedure-card-premium:hover .procedure-card-rail-dot,
+.procedure-card-premium:focus-visible .procedure-card-rail-dot {
   opacity: 1;
-  transform: translateX(-0.5px) scale(1);
-}
-
-.procedure-card-premium::before,
-.procedure-card-premium::after {
-  display: none !important;
-  content: none !important;
+  transform: scale(1);
 }
 
 .procedure-card-top {
@@ -3209,27 +3455,28 @@ button {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .procedure-card-index {
   font-family: var(--font-heading);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
   color: var(--color-gold);
 }
 
 .procedure-card-icon {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--color-gold-hover);
-  background: rgba(197, 160, 89, 0.08);
-  border: 1px solid rgba(197, 160, 89, 0.18);
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.08);
   transition:
     transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.5s ease,
@@ -3237,32 +3484,32 @@ button {
 }
 
 .procedure-card-premium:hover .procedure-card-icon {
-  transform: scale(1.04);
-  background: rgba(197, 160, 89, 0.14);
-  border-color: rgba(197, 160, 89, 0.35);
+  transform: translateY(-1px) scale(1.03);
+  background: #ffffff;
+  border-color: rgba(197, 160, 89, 0.45);
   color: var(--color-gold-hover);
 }
 
 .procedure-card-tag {
   display: inline-block;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 1.3px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--color-gold);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .procedure-card-premium:hover .procedure-card-tag {
-  letter-spacing: 1.5px;
+  letter-spacing: 1.4px;
 }
 
 .procedure-card-premium h3 {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
-  letter-spacing: -0.25px;
-  margin: 0 0 8px;
-  line-height: 1.25;
+  letter-spacing: -0.3px;
+  margin: 0 0 6px;
+  line-height: 1.2;
   transition: color 0.5s ease;
 }
 
@@ -3271,30 +3518,40 @@ button {
 }
 
 .procedure-card-premium p {
-  font-size: 13.5px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.55;
   font-weight: 400;
-  margin: 0 0 16px;
-  flex: 1;
+  margin: 0;
+  flex: none;
   color: var(--color-text-secondary);
 }
 
 .procedure-card-cta {
-  display: inline-flex;
+  position: relative;
+  z-index: 1;
+  display: flex;
   align-items: center;
   gap: 7px;
-  margin-top: auto;
-  font-size: 11px;
+  width: 100%;
+  margin-top: 0;
+  padding: 11px 18px 11px 22px;
+  border-top: 1px solid rgba(197, 160, 89, 0.18);
+  background: rgba(197, 160, 89, 0.06);
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 1.3px;
+  letter-spacing: 1.25px;
   text-transform: uppercase;
   color: var(--color-gold-hover);
-  transition: gap 0.5s ease, color 0.5s ease;
+  transition:
+    gap 0.5s ease,
+    color 0.5s ease,
+    background 0.45s ease;
 }
 
 .procedure-card-premium:hover .procedure-card-cta {
   gap: 10px;
   color: var(--color-gold);
+  background: rgba(197, 160, 89, 0.1);
 }
 
 .procedures-cta-premium {
@@ -3308,11 +3565,11 @@ button {
 }
 
 .procedure-category {
-  margin-bottom: 64px;
+  margin-bottom: 52px;
 }
 
 .procedure-category-header {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   max-width: 680px;
 }
 
@@ -3579,18 +3836,18 @@ button {
   opacity: 0;
   will-change: transform, opacity;
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s ease,
+    box-shadow 0.5s ease;
 }
 
 .home-showcase-card.from-left {
-  transform: translate3d(-40px, 12px, 0);
+  transform: translate3d(-40px, 0, 0);
 }
 
 .home-showcase-card.from-right {
-  transform: translate3d(40px, 12px, 0);
+  transform: translate3d(40px, 0, 0);
 }
 
 .home-showcase-stage.is-in .home-showcase-card {
@@ -3600,12 +3857,12 @@ button {
 
 .home-showcase-stage:not(.is-in) .home-showcase-card.from-left {
   opacity: 0;
-  transform: translate3d(-28px, 8px, 0);
+  transform: translate3d(-28px, 0, 0);
 }
 
 .home-showcase-stage:not(.is-in) .home-showcase-card.from-right {
   opacity: 0;
-  transform: translate3d(28px, 8px, 0);
+  transform: translate3d(28px, 0, 0);
 }
 
 a.home-showcase-card:hover,
@@ -4567,12 +4824,14 @@ a.home-showcase-card:hover .home-showcase-arrow {
   }
 
   .stats-showcase .stats-pin-scene {
-    min-height: 160vh;
+    min-height: 0;
   }
 
-  .stats-orbit-item.from-right,
-  .stats-orbit-item.from-left {
-    transform: translate3d(0, 36px, 0) scale(0.94);
+  .stats-pin-sticky {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    padding: 72px 0;
   }
 
   .section-title {
@@ -4627,5 +4886,99 @@ a.home-showcase-card:hover .home-showcase-arrow {
   .profile-meta-divider {
     width: 1px;
     height: 18px;
+  }
+}
+
+/* ==========================================================================
+   EXTRA-SMALL / SAFE-AREA POLISH
+   ========================================================================== */
+@media (max-width: 480px) {
+  .logo-name {
+    font-size: 14px;
+  }
+
+  .logo-tagline {
+    max-width: min(140px, 38vw);
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .about-grid {
+    gap: 28px;
+  }
+
+  .about-fade-body {
+    padding: calc(var(--header-height) + 28px) 0 48px;
+  }
+
+  .about-img-container {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .about-title {
+    font-size: clamp(28px, 8vw, 34px);
+  }
+
+  .procedures-premium-card-index {
+    margin-bottom: 12px;
+  }
+
+  .procedures-premium-card h3 {
+    font-size: 18px;
+  }
+
+  .procedures-cards-title {
+    font-size: clamp(26px, 7vw, 32px);
+  }
+
+  .mobile-nav-container {
+    width: 100%;
+    padding: 28px 22px;
+    padding-top: max(28px, env(safe-area-inset-top));
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+
+  .footer-section,
+  .footer-premium {
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+
+  .subpage-hero {
+    padding: calc(var(--header-height) + 48px) 0 48px;
+  }
+
+  .subpage-title {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+}
+
+@media (max-width: 360px) {
+  .logo-tagline {
+    display: none;
+  }
+
+  .hero-title-large {
+    font-size: 26px;
+  }
+
+  .btn {
+    padding: 12px 22px;
+    font-size: 12px;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 991px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: calc(var(--header-height) + 24px);
+    padding-bottom: 48px;
+  }
+
+  .hero-description-centered {
+    margin-bottom: 20px;
   }
 }

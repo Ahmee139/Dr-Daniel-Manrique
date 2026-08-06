@@ -150,7 +150,7 @@ export default function ProcedureCard({
       href={target}
       onClick={onClick}
       className={`procedure-card procedure-card-premium ${side} ${isLoading ? 'is-loading' : ''}`}
-      style={{ transitionDelay: `${0.08 + Math.min(index, 6) * 0.1}s` }}
+      style={{ ['--card-delay' as string]: `${0.08 + Math.min(index, 6) * 0.1}s` }}
       aria-busy={isLoading}
     >
       <span className="procedure-card-rail" aria-hidden="true">
@@ -161,15 +161,22 @@ export default function ProcedureCard({
         <span className="procedure-card-rail-dot" />
       </span>
 
-      <div className="procedure-card-top">
-        <span className="procedure-card-index">{String(index + 1).padStart(2, '0')}</span>
-        <span className="procedure-card-icon" aria-hidden="true">
-          <ProcedureIcon id={id} />
-        </span>
+      <span className="procedure-card-watermark" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      <div className="procedure-card-body">
+        <div className="procedure-card-top">
+          <span className="procedure-card-index">{String(index + 1).padStart(2, '0')}</span>
+          <span className="procedure-card-icon" aria-hidden="true">
+            <ProcedureIcon id={id} />
+          </span>
+        </div>
+        <span className="procedure-card-tag">{t[categoryTitleKey]}</span>
+        <h3>{t[titleKey]}</h3>
+        <p>{t[descKey]}</p>
       </div>
-      <span className="procedure-card-tag">{t[categoryTitleKey]}</span>
-      <h3>{t[titleKey]}</h3>
-      <p>{t[descKey]}</p>
+
       <span className="procedure-card-cta">
         {t.bookConsultation}
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

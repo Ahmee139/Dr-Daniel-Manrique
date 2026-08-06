@@ -3,17 +3,18 @@
 import type { MouseEvent } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import { scrollToHomeAbout } from '@/utils/homeScroll';
 
 export default function HeroSection() {
   const { t } = useLanguage();
 
-  const scrollTo = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+  const goAbout = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToHomeAbout();
   };
 
   return (
-    <section className="hero-section">
+    <section id="hero" className="hero-section">
       <div className="hero-video-bg-hook" aria-hidden="true">
         <video
           className="hero-video"
@@ -62,7 +63,7 @@ export default function HeroSection() {
             <Link href="/procedures" className="btn btn-gold btn-large">
               {t.exploreBtn}
             </Link>
-            <a href="#about" onClick={(e) => scrollTo(e, 'about')} className="btn btn-outline btn-outline-on-dark btn-large">
+            <a href="#about" onClick={goAbout} className="btn btn-outline btn-outline-on-dark btn-large">
               {t.meetBtn}
               <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" className="btn-arrow">
                 <line x1="5" y1="12" x2="19" y2="12"></line>

@@ -25,17 +25,30 @@ export default function ProceduresPage() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          entry.target.classList.toggle('is-in', entry.isIntersecting);
+          // Keep revealed once in view so hover effects stay reliable
+          if (entry.isIntersecting) entry.target.classList.add('is-in');
         });
       },
       {
-        threshold: 0.18,
-        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.12,
+        rootMargin: '0px 0px -6% 0px',
       }
     );
 
     categories.forEach((category) => observer.observe(category));
-    return () => observer.disconnect();
+
+    // Ensure first visible category reveals immediately
+    const boot = window.setTimeout(() => {
+      categories.forEach((category) => {
+        const rect = category.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.92) category.classList.add('is-in');
+      });
+    }, 80);
+
+    return () => {
+      window.clearTimeout(boot);
+      observer.disconnect();
+    };
   }, []);
 
   return (

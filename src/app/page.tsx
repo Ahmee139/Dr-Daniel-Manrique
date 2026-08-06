@@ -8,6 +8,7 @@ import StatsSection from '@/components/home/StatsSection';
 import AdvantagesSection from '@/components/home/AdvantagesSection';
 import ContactSection from '@/components/home/ContactSection';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { scrollToHomeAbout } from '@/utils/homeScroll';
 
 function shouldPlayIntroLoader() {
   if (typeof window === 'undefined') return true;
@@ -56,13 +57,24 @@ export default function HomePage() {
     window.history.scrollRestoration = 'manual';
     const hash = window.location.hash.replace('#', '');
     if (!hash) {
-      if (loaderStep >= 5) window.scrollTo(0, 0);
+      if (loaderStep >= 5) window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       return undefined;
     }
     if (loaderStep < 5) return undefined;
     const timer = window.setTimeout(() => {
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
+      if (hash === 'about') {
+        scrollToHomeAbout('smooth');
+        return;
+      }
+      if (hash === 'hero' || hash === 'home') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        return;
+      }
+      const el = document.getElementById(hash);
+      if (!el) return;
+      const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - 72));
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }, 120);
     return () => window.clearTimeout(timer);
   }, [loaderStep]);
 
