@@ -4186,6 +4186,82 @@ a.home-showcase-card:hover .home-showcase-arrow {
   box-shadow: 0 12px 28px rgba(197, 160, 89, 0.28);
 }
 
+/* Contact / showcase — stack cards on mobile (must follow base 2-col rule) */
+@media (max-width: 991px) {
+  .home-showcase-stage,
+  .home-showcase-stage-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 32px;
+    gap: 14px;
+  }
+
+  .home-showcase-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px 20px 26px;
+    min-width: 0;
+  }
+
+  .home-showcase-card.from-left,
+  .home-showcase-card.from-right {
+    transform: translate3d(0, 24px, 0);
+  }
+
+  .home-showcase-stage.is-in .home-showcase-card.from-left,
+  .home-showcase-stage.is-in .home-showcase-card.from-right {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .home-showcase-value {
+    font-size: 15px;
+    line-height: 1.45;
+    padding-right: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .home-showcase-arrow {
+    position: static;
+    margin-top: 4px;
+    align-self: flex-start;
+  }
+
+  .home-showcase-cta {
+    width: 100%;
+  }
+
+  .btn-showcase-cta {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding: 15px 18px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-showcase-value {
+    font-size: 14px;
+  }
+
+  .home-showcase-card {
+    padding: 20px 18px 24px;
+  }
+
+  .btn-showcase-cta {
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 14px 16px;
+  }
+}
+
 .contact-simple {
   max-width: 720px;
   margin: 0 auto;
@@ -5025,32 +5101,39 @@ a.home-showcase-card:hover .home-showcase-arrow {
   }
 
   .advantages-timeline {
-    max-width: 520px;
-    padding-left: 28px;
+    --adv-line-x: 10px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .advantages-spine {
-    left: 8px;
-    transform: none;
+    left: var(--adv-line-x);
+    transform: translateX(-50%);
   }
 
   .advantage-step {
     min-height: 0;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     justify-content: flex-start !important;
-    padding-left: 36px !important;
+    padding-left: 28px !important;
     padding-right: 0 !important;
+    width: 100%;
   }
 
   .advantage-node {
-    left: 8px;
-    top: 24px;
-    margin-left: -7px;
+    left: var(--adv-line-x);
+    top: 28px;
+    margin-left: -6px;
   }
 
   .advantage-card-premium {
     max-width: none;
+    width: 100%;
     flex: 1 1 auto;
+    padding: 22px 18px 24px;
   }
 
   .advantage-step.is-left .advantage-card-premium {
