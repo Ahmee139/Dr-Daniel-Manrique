@@ -1,12 +1,14 @@
 'use client';
 
 import type { MouseEvent } from 'react';
-import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import { usePageTransition } from '@/context/PageTransitionContext';
 import { scrollToHomeAbout } from '@/utils/homeScroll';
 
 export default function HeroSection() {
   const { t } = useLanguage();
+  const { navigateWithTransition, transitioning, sectionName } = usePageTransition();
+  const isExploreLoading = transitioning && sectionName === t.exploreBtn;
 
   const goAbout = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -60,9 +62,16 @@ export default function HeroSection() {
             </div>
           </div>
           <div className="hero-actions-centered fade-in-up" style={{ animationDelay: '0.6s' }}>
-            <Link href="/procedures" className="btn btn-gold btn-large">
-              {t.exploreBtn}
-            </Link>
+            <button
+              type="button"
+              className={`btn btn-gold btn-large btn-with-loader ${isExploreLoading ? 'is-loading' : ''}`}
+              onClick={() => navigateWithTransition('/procedures', t.exploreBtn)}
+              disabled={transitioning}
+              aria-busy={isExploreLoading}
+            >
+              <span>{t.exploreBtn}</span>
+              <span className="btn-inline-spinner" aria-hidden="true" />
+            </button>
             <a href="#about" onClick={goAbout} className="btn btn-outline btn-outline-on-dark btn-large">
               {t.meetBtn}
               <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" className="btn-arrow">

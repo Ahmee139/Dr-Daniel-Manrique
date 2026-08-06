@@ -644,27 +644,40 @@ button {
   letter-spacing: 1.5px;
   color: var(--color-text-primary);
   padding-bottom: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-submenu-btn.is-current {
+  color: var(--color-gold-hover);
 }
 
 .mobile-submenu-btn svg {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mobile-submenu-btn.active svg {
+.mobile-submenu-btn.is-open svg {
   transform: rotate(180deg);
 }
 
 .mobile-submenu {
   display: none;
-  padding-left: 16px;
-  margin-top: 12px;
+  list-style: none;
+  padding: 0 0 0 16px;
+  margin: 12px 0 0;
   border-left: 1.5px solid var(--color-border);
   flex-direction: column;
   gap: 12px;
 }
 
-.mobile-submenu.open {
+.mobile-submenu.is-open {
   display: flex;
+}
+
+.mobile-submenu[hidden] {
+  display: none !important;
 }
 
 .mobile-submenu a {
@@ -1084,7 +1097,7 @@ button {
   }
 
   .pin-panel-hero {
-    min-height: 100svh;
+    min-height: auto;
   }
 
   .pin-hold {
@@ -1129,11 +1142,15 @@ button {
   }
 
   .hero-section {
-    padding: calc(var(--header-height) + 28px) 0 56px;
-    min-height: 100svh;
+    padding: calc(var(--header-height) + 28px) 0 44px;
+    min-height: 0;
     height: auto;
     overflow: hidden;
     width: 100%;
+  }
+
+  .hero-video {
+    object-position: center 28%;
   }
 
   .hero-container,
@@ -1282,6 +1299,10 @@ button {
 
 /* Breakpoint: Mobile Devices */
 @media (max-width: 480px) {
+  .hero-section {
+    padding: calc(var(--header-height) + 22px) 0 36px;
+  }
+
   .hero-title-large {
     font-size: clamp(24px, 7.5vw, 30px);
     letter-spacing: -0.6px;
@@ -1315,6 +1336,16 @@ button {
   .main-header .container {
     padding-left: 14px;
     padding-right: 14px;
+  }
+
+  .btn-showcase-cta {
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 14px 16px;
+  }
+
+  .home-showcase-value {
+    font-size: 13px;
   }
 }
 
@@ -2329,8 +2360,8 @@ button {
 }
 
 .footer-brand .logo-mark {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.25);
 }
 
@@ -2487,9 +2518,27 @@ button {
     text-align: center;
   }
 
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-brand .logo-mark {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 4px;
+  }
+
+  .footer-brand-title {
+    font-size: 17px;
+    margin-top: 10px;
+  }
+
   .footer-brand-text {
     margin-left: auto;
     margin-right: auto;
+    max-width: 280px;
   }
 
   .footer-links a:hover {
@@ -2501,6 +2550,36 @@ button {
     align-items: center;
     text-align: center;
     gap: 8px;
+  }
+
+  .home-showcase-cta {
+    width: 100%;
+  }
+
+  .btn-showcase-cta {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding: 15px 18px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+  }
+
+  .home-showcase-stage {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .home-showcase-value {
+    font-size: 14px;
+    line-height: 1.4;
+    padding-right: 44px;
+  }
+
+  .home-showcase-card {
+    padding: 22px 20px 48px;
   }
 
   .consultation-form-panel-premium {
@@ -4054,7 +4133,9 @@ a.home-showcase-card:hover,
   font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.45;
+  overflow-wrap: anywhere;
   word-break: break-word;
+  hyphens: none;
 }
 
 .home-showcase-arrow {
@@ -4081,16 +4162,23 @@ a.home-showcase-card:hover .home-showcase-arrow {
 .home-showcase-cta {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .btn-showcase-cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 14px 28px;
   font-size: 12px;
   letter-spacing: 1.5px;
+  white-space: nowrap;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn-showcase-cta svg {
+  flex-shrink: 0;
 }
 
 .btn-showcase-cta:hover:not(:disabled) {
@@ -5138,11 +5226,15 @@ a.home-showcase-card:hover .home-showcase-arrow {
 @media (max-height: 700px) and (max-width: 991px) {
   .hero-section {
     min-height: auto;
-    padding-top: calc(var(--header-height) + 24px);
-    padding-bottom: 48px;
+    padding-top: calc(var(--header-height) + 20px);
+    padding-bottom: 36px;
   }
 
   .hero-description-centered {
+    margin-bottom: 16px;
+  }
+
+  .hero-bullets-centered {
     margin-bottom: 20px;
   }
 }

@@ -298,7 +298,10 @@ export default function Navbar() {
 
             <button
               className={`mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
-              onClick={() => setMobileMenuOpen(true)}
+              onClick={() => {
+                setMobileSubmenuOpen({ about: false });
+                setMobileMenuOpen(true);
+              }}
               aria-label="Open Navigation"
               aria-expanded={mobileMenuOpen}
               type="button"
@@ -347,17 +350,26 @@ export default function Navbar() {
               </li>
               <li className="mobile-has-submenu">
                 <button
-                  className={`mobile-submenu-btn ${mobileSubmenuOpen.about || isAboutActive ? 'active' : ''}`}
-                  onClick={() => setMobileSubmenuOpen((prev) => ({ ...prev, about: !prev.about }))}
+                  className={`mobile-submenu-btn ${mobileSubmenuOpen.about ? 'is-open' : ''} ${isAboutActive ? 'is-current' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setMobileSubmenuOpen((prev) => ({ about: !prev.about }));
+                  }}
                   type="button"
                   aria-expanded={mobileSubmenuOpen.about}
+                  aria-controls="mobile-about-submenu"
                 >
                   {t.about}
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none">
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none" aria-hidden="true">
                     <polyline points="6 9 12 15 18 9"></polyline>
                   </svg>
                 </button>
-                <ul className={`mobile-submenu ${mobileSubmenuOpen.about ? 'open' : ''}`}>
+                <ul
+                  id="mobile-about-submenu"
+                  className={`mobile-submenu ${mobileSubmenuOpen.about ? 'is-open' : ''}`}
+                  hidden={!mobileSubmenuOpen.about}
+                >
                   <li>
                     <Link href="/#about" onClick={handleAboutSection}>
                       {t.about}

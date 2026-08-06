@@ -83,12 +83,6 @@ export default function ContactSection() {
           >
             <span>{t.bookConsultation}</span>
             <span className="btn-inline-spinner" aria-hidden="true" />
-            {!isLoading ? (
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            ) : null}
           </button>
         </div>
       </div>
