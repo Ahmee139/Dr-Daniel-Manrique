@@ -3453,17 +3453,13 @@ button {
 .procedure-card-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .procedure-card-index {
-  font-family: var(--font-heading);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: var(--color-gold);
+  display: none;
 }
 
 .procedure-card-icon {

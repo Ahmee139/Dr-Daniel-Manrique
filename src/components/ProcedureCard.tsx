@@ -167,7 +167,6 @@ export default function ProcedureCard({
 
       <div className="procedure-card-body">
         <div className="procedure-card-top">
-          <span className="procedure-card-index">{String(index + 1).padStart(2, '0')}</span>
           <span className="procedure-card-icon" aria-hidden="true">
             <ProcedureIcon id={id} />
           </span>
